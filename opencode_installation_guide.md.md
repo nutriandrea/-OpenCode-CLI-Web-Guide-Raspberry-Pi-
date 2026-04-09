@@ -1,291 +1,370 @@
-# 🧠 OpenCode Installation & Usage Guide (Raspberry Pi / Linux)
+# OpenCode Installation and Usage Guide for Raspberry Pi and Linux
 
-This guide walks you through installing and using OpenCode step-by-step on Raspberry Pi or Linux.
+OpenCode is an open-source AI coding agent that helps you explore codebases, plan changes, and build features directly from your terminal or browser. On Raspberry Pi and Linux, the easiest setup is to install it from the official script, connect a provider, and initialize your project. [opencode](https://opencode.ai/docs/)
 
----
+***
 
-## 1️⃣ Update Your System
+## Requirements
 
-Before installing new software, update your system packages.
+Before you start, make sure you have:
+- A modern terminal emulator.
+- Internet access.
+- API keys for at least one supported LLM provider. [opencode](https://opencode.ai/docs/)
+
+On Raspberry Pi, a lightweight setup is best. Use OpenCode with cloud providers instead of trying to run heavy local models on the device itself. [opencode](https://opencode.ai/docs/)
+
+***
+
+## Update Your System
+
+Start by updating your packages:
 
 ```bash
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get upgrade -y
 ```
 
----
+This reduces the chance of dependency issues during installation.
 
-## 2️⃣ Install Essential Development Tools
+***
 
-These are required to download code and build dependencies.
+## Install Basic Tools
+
+Install the utilities needed for downloading and working with projects:
 
 ```bash
 sudo apt install -y git curl build-essential
 ```
 
----
+- `git` for cloning and managing repositories.
+- `curl` for downloading the installer.
+- `build-essential` for native builds when dependencies need compilation.
 
-## 3️⃣ Install Node.js (Required)
+***
 
-OpenCode requires Node.js.
+## Install OpenCode
 
-```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-```
-
----
-
-## 4️⃣ Verify Node.js Installation
-
-```bash
-node --version
-npm --version
-```
-
----
-
-# 📦 Install OpenCode
-
-## Recommended Method (Install Script)
+The recommended install method is the official install script:
 
 ```bash
 curl -fsSL https://opencode.ai/install | bash
 ```
 
----
+OpenCode also supports alternative install methods such as npm, Bun, pnpm, Yarn, Homebrew, Arch packages, Docker, and Windows package managers. [opencode](https://opencode.ai/docs/)
 
-## Alternative Methods
+### Verify the installation
 
-### Using Node.js (npm)
-
-```bash
-npm install -g opencode-ai
-```
-
----
-
-### Using Homebrew (macOS / Linux)
+Check that the binary is available:
 
 ```bash
-brew install anomalyco/tap/opencode
+opencode --version
 ```
 
-👉 Recommended over `brew install opencode` because it’s more up to date.
+If the command is not found, reopen the terminal and make sure the installation directory is in your `PATH`.
 
----
+***
 
-### Arch Linux
+## Connect an AI Provider
+
+OpenCode works with any supported provider as long as you configure its API key. The docs recommend starting with OpenCode Zen if you are new to providers. [opencode](https://opencode.ai/docs/)
+
+Launch OpenCode:
 
 ```bash
-sudo pacman -S opencode        # Stable
-paru -S opencode-bin           # Latest (AUR)
+opencode
 ```
 
----
+Then run:
 
-### Windows (Recommended: WSL)
-
-```bash
-choco install opencode
-```
-
-or
-
-```bash
-scoop install opencode
-```
-
-or
-
-```bash
-npm install -g opencode-ai
-```
-
----
-
-### Docker
-
-```bash
-docker run -it --rm ghcr.io/anomalyco/opencode
-```
-
----
-
-# ⚙️ Configure OpenCode
-
-OpenCode works with multiple LLM providers via API keys.
-
-## Connect your provider
-
-Inside OpenCode:
-
-```
+```text
 /connect
 ```
 
-### Steps
+Follow the prompts:
+1. Select `opencode`.
+2. Open `https://opencode.ai/auth`.
+3. Sign in.
+4. Add billing details.
+5. Copy your API key.
+6. Paste it into the terminal. [opencode](https://opencode.ai/docs/)
 
-1. Select **opencode (recommended)**
-2. Open: [https://opencode.ai/auth](https://opencode.ai/auth)
-3. Sign in
-4. Add billing details
-5. Copy your API key
-6. Paste it into the terminal
+OpenCode stores credentials in its auth file and can also read environment variables or `.env` values when available. [opencode](https://opencode.ai/docs/)
 
-👉 If you’re new, use **OpenCode Zen** (curated models)
+***
 
----
+## Initialize a Project
 
-# 🚀 Initialize a Project
-
-Navigate to your project:
+Go to the project you want OpenCode to understand:
 
 ```bash
 cd /path/to/project
 opencode
 ```
 
-Then run:
+Then initialize the project:
 
-```
+```text
 /init
 ```
 
-### What happens
+This makes OpenCode analyze the repository and create an `AGENTS.md` file in the project root. The docs recommend committing `AGENTS.md` to Git so OpenCode can better understand the project’s structure and coding patterns. [opencode](https://opencode.ai/docs/)
 
-* OpenCode analyzes your codebase
-* Creates an `AGENTS.md` file
-* Learns your project structure
+***
 
-👉 Important: commit `AGENTS.md` to Git
+## Use OpenCode in the Terminal
 
----
+Once initialized, you can ask OpenCode questions about the codebase or request changes directly. [opencode](https://opencode.ai/docs/)
 
-# 💻 Usage
+### Ask questions
 
-You can now use OpenCode to interact with your codebase.
+Example:
 
----
-
-## Ask Questions
-
-```
+```text
 How is authentication handled in @packages/functions/src/api/index.ts
 ```
 
-👉 Tip: use `@` to search files
+Use `@` to fuzzy search files in the repository. [opencode](https://opencode.ai/docs/)
 
----
+### Plan before building
 
-## Add Features (Recommended Workflow)
+For complex features, switch to **Plan mode** with `Tab`. In Plan mode, OpenCode suggests how it would implement the change without editing files. [opencode](https://opencode.ai/docs/)
 
-### 1. Switch to Plan Mode
+A good workflow is:
+1. Describe the feature in detail.
+2. Review the plan.
+3. Refine it if needed.
+4. Switch back to Build mode with `Tab`.
+5. Let OpenCode implement it. [opencode](https://opencode.ai/docs/)
 
-Press:
+### Make direct changes
 
-```
-TAB
-```
+For simpler tasks, you can skip planning and ask OpenCode to implement changes directly. The docs emphasize that clear instructions produce better results. [opencode](https://opencode.ai/docs/)
 
----
+Example:
 
-### 2. Describe the feature
-
-```
-When a user deletes a note, flag it as deleted in the database.
-Then create a screen showing recently deleted notes.
-Allow restore or permanent deletion.
-```
-
----
-
-### 3. Iterate on the plan
-
-```
-Use this UI as a reference [Image]
-```
-
-👉 You can drag & drop images into the terminal
-
----
-
-### 4. Build the feature
-
-Press again:
-
-```
-TAB
-```
-
-Then:
-
-```
-Go ahead and implement the changes
-```
-
----
-
-## Direct Changes
-
-```
+```text
 Add authentication to /settings using logic from @notes.ts
 ```
 
----
+### Undo and redo
 
-## Undo / Redo
+If a change is not what you wanted:
+- `/undo` reverts the last change.
+- `/redo` reapplies it. [opencode](https://opencode.ai/docs/)
 
+***
+
+## Configure OpenCode
+
+OpenCode uses JSON or JSONC config files. The most common files are:
+- `~/.config/opencode/opencode.json` for global settings.
+- `opencode.json` in the project root for project-specific settings.
+- `~/.config/opencode/tui.json` for terminal UI settings. [opencode](https://opencode.ai/download)
+
+### Example config
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "autoupdate": true,
+  "server": {
+    "port": 4096
+  }
+}
 ```
-/undo
-/redo
+
+### Precedence order
+
+OpenCode merges config sources instead of replacing them. The order is:
+
+1. Remote config from `.well-known/opencode`.
+2. Global config in `~/.config/opencode/opencode.json`.
+3. Custom config from `OPENCODE_CONFIG`.
+4. Project config in `opencode.json`.
+5. `.opencode` directories.
+6. Inline config from `OPENCODE_CONFIG_CONTENT`.
+7. Managed config files.
+8. macOS managed preferences. [opencode](https://opencode.ai/download)
+
+That means project settings can override global defaults, and managed policies override everything. [opencode](https://opencode.ai/download)
+
+### Useful config options
+
+Common settings include:
+- `model` and `small_model`.
+- `share` for conversation sharing.
+- `permission` for tool approval behavior.
+- `snapshot` for rollback support.
+- `autoupdate` for automatic updates.
+- `watcher` for file-ignore patterns.
+- `mcp` for Model Context Protocol servers.
+- `agent`, `command`, `plugin`, and `instructions` for customization. [opencode](https://opencode.ai/download)
+
+### Environment variables
+
+Useful variables include:
+- `OPENCODE_CONFIG`
+- `OPENCODE_TUI_CONFIG`
+- `OPENCODE_CONFIG_DIR`
+- `OPENCODE_CONFIG_CONTENT`
+- `OPENCODE_SERVER_PASSWORD`
+- `OPENCODE_SERVER_USERNAME`
+- `OPENCODE_AUTO_SHARE`
+- `OPENCODE_DISABLE_AUTOUPDATE` [opencode](https://opencode.ai/download)
+
+You can also use `{env:VARIABLE_NAME}` and `{file:path/to/file}` in config files for secrets and reusable content. [opencode](https://opencode.ai/download)
+
+***
+
+## Web Mode
+
+OpenCode can run in the browser with `opencode web`. The web UI shares sessions and state with the terminal UI, so you can move between them without losing context. [docs.z](https://docs.z.ai/devpack/tool/opencode)
+
+### Start the web server
+
+```bash
+opencode web
 ```
 
----
+By default, OpenCode starts on `127.0.0.1` with a random free port and opens your browser automatically. On Windows, the docs recommend running it from WSL for better file system and terminal integration. [docs.z](https://docs.z.ai/devpack/tool/opencode)
 
-## Share Conversations
+### Set a fixed port
 
+```bash
+opencode web --port 4096
 ```
-/share
+
+### Expose it on your network
+
+```bash
+opencode web --hostname 0.0.0.0
 ```
 
-👉 Generates a shareable link
+This makes OpenCode reachable from other devices on your LAN. [docs.z](https://docs.z.ai/devpack/tool/opencode)
 
----
+### Enable mDNS discovery
 
-# ⚡ Tips
+```bash
+opencode web --mdns
+```
 
-* Treat OpenCode like a junior developer
-* Give clear instructions and context
-* Use Plan mode for complex features
-* Iterate before building
+This advertises the server as `opencode.local`. You can also set a custom mDNS domain:
 
----
+```bash
+opencode web --mdns --mdns-domain myproject.local
+```
 
-# 🧠 What You Can Do With OpenCode
+### Protect access
 
-* Generate code
-* Refactor projects
-* Understand large codebases
-* Build features automatically
-* Create AI-driven dev workflows
+```bash
+OPENCODE_SERVER_PASSWORD=secret opencode web
+```
 
----
+The default username is `opencode`, and you can change it with `OPENCODE_SERVER_USERNAME`. For anything exposed beyond localhost, set a password. [docs.z](https://docs.z.ai/devpack/tool/opencode)
 
-# ⚡ Raspberry Pi Recommendations
+### Attach the TUI to the web server
 
-* Prefer Raspberry Pi 5
-* Avoid heavy local models
-* Use API-based LLMs
-* Keep system lightweight
+```bash
+opencode attach http://localhost:4096
+```
 
----
+This lets the browser UI and terminal UI work together on the same sessions. [docs.z](https://docs.z.ai/devpack/tool/opencode)
 
-# ⭐ Support
+***
 
-If you found this guide helpful:
+## CLI Commands You’ll Use Most
 
-* ⭐ Star the repository
-* Share it with others
-* Contribute improvements
+The CLI starts the TUI by default:
+
+```bash
+opencode
+```
+
+Other useful commands include:
+- `opencode run "prompt"` for non-interactive use.
+- `opencode auth login` to add provider credentials.
+- `opencode models` to list available models.
+- `opencode session list` to inspect sessions.
+- `opencode serve` for a headless API server.
+- `opencode web` for browser access.
+- `opencode attach <url>` to connect the TUI to a running backend.
+- `opencode mcp add` to add an MCP server.
+- `opencode github install` for GitHub automation.
+- `opencode export` and `opencode import` for session data.
+- `opencode upgrade` to update.
+- `opencode uninstall` to remove OpenCode. [opencode](https://opencode.ai/docs/)
+
+Common global flags:
+- `--help`
+- `--version`
+- `--print-logs`
+- `--log-level` [opencode](https://opencode.ai/docs/)
+
+***
+
+## Raspberry Pi Tips
+
+For Raspberry Pi, keep the setup simple:
+- Prefer Raspberry Pi 5 if possible.
+- Use OpenCode with cloud models rather than local heavyweight models.
+- If you expose the web interface on your network, always set a password.
+- Keep the system lightweight and avoid unnecessary background services.
+
+This gives you a much smoother experience than trying to turn the Pi into a local model host. [docs.z](https://docs.z.ai/devpack/tool/opencode)
+
+***
+
+## Recommended Quick Start
+
+If you want the shortest possible path:
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt install -y git curl build-essential
+curl -fsSL https://opencode.ai/install | bash
+opencode --version
+opencode
+```
+
+Then run:
+- `/connect`
+- `/init`
+- start asking OpenCode about your project. [opencode](https://opencode.ai/docs/)
+
+***
+
+## Full Example Workflow
+
+```bash
+cd ~/projects/my-app
+opencode
+```
+
+Inside OpenCode:
+```text
+/connect
+/init
+```
+
+Then try:
+
+```text
+How is authentication handled in @src/auth.ts
+```
+
+For a bigger feature:
+1. Press `Tab` to enter Plan mode.
+2. Describe the feature in detail.
+3. Review the plan.
+4. Press `Tab` again to build it. [opencode](https://opencode.ai/docs/)
+
+***
+
+## Final Notes
+
+OpenCode is especially useful on Raspberry Pi when you treat the device as a lightweight frontend for remote AI providers. The docs clearly support terminal usage, browser usage, project initialization, configuration files, and shared sessions across interfaces. [opencode](https://opencode.ai/download)
+
+If you want, I can turn this into a **polished README.md version** with better formatting, headings, and copy-ready code blocks.
 
